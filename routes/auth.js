@@ -4,35 +4,27 @@ import User from '../models/User.js';
 
 const router = express.Router();
 
-// --------------------
-// Local Signup
-// --------------------
+// --- Local Signup ---
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.render('signup', { error: 'User already exists', success: null });
     }
 
-    // Create and save new user
     const newUser = new User({ name, email, password });
     await newUser.save();
 
-    // Show success on the same page
-    return res.render('signup', { success: 'Account created successfully! Please login.', error: null });
-
+    return res.render('signup', { success: 'Account created! Please login.', error: null });
   } catch (err) {
     console.error('Signup Error:', err);
     return res.render('signup', { error: 'Server error, please try again.', success: null });
   }
 });
 
-// --------------------
-// Local Login
-// --------------------
+// --- Local Login ---
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -42,41 +34,33 @@ router.post('/login', async (req, res) => {
       return res.render('login', { error: 'Invalid email or password', success: null });
     }
 
-    // Save user session
-    req.session.user = { id: user._id, name: user.name };
-
-    // Redirect to homepage after login
-    return res.redirect('/');
-
+    // Store user in cookie-session
+    req.login(user, (err) => {
+      if (err) return res.render('login', { error: 'Login failed', success: null });
+      return res.redirect('/');
+    });
   } catch (err) {
     console.error('Login Error:', err);
     return res.render('login', { error: 'Server error during login', success: null });
   }
 });
 
-// --------------------
-// Google OAuth (Optional)
-// --------------------
+// --- Google OAuth ---
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    req.session.user = req.user;
     res.redirect('/');
   }
 );
 
-// --------------------
-// Logout
-// --------------------
+// --- Logout ---
 router.get('/logout', (req, res) => {
-  req.session.destroy(() => {
+  req.logout(() => {
     res.redirect('/login');
   });
 });
 
 export default router;
-
-//test

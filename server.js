@@ -1,14 +1,14 @@
 import express from 'express';
-import session from 'express-session';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cookieSession from 'cookie-session';
 import passport from 'passport';
 
 import authRoutes from './routes/auth.js';
 import pageRoutes from './routes/pages.js';
-import './utils/passportConfig.js'; // ✅ OAuth config
+import './utils/passportConfig.js'; // ✅ Google OAuth config
 
 dotenv.config();
 const app = express();
@@ -24,26 +24,21 @@ mongoose
   .then(() => console.log('✅ MongoDB Connected'))
   .catch((err) => console.error('❌ MongoDB Error:', err));
 
-// --- Static & Body Parsers ---
+// --- Middleware ---
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// --- Express Session (Only) ---
+// --- Cookie Session (No express-session) ---
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'supersecretkey',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,        // ⚠️ Must be false for localhost without HTTPS
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60, // 1 hour
-    },
+  cookieSession({
+    name: 'traveltales-session',
+    keys: [process.env.SESSION_SECRET || 'supersecretkey'],
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
   })
 );
 
-// --- Passport Init for OAuth ---
+// --- Passport Init ---
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -51,9 +46,9 @@ app.use(passport.session());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// --- Make session user available in all EJS templates ---
+// --- Make user available in all EJS templates ---
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || req.user || null; // OAuth or local user
+  res.locals.user = req.user || null;
   next();
 });
 

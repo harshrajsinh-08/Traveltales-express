@@ -5,12 +5,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// --- Serialize User ---
+// Serialize & Deserialize User
 passport.serializeUser((user, done) => {
-  done(null, user.id); // store user id in session
+  done(null, user.id);
 });
 
-// --- Deserialize User ---
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
@@ -20,29 +19,25 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-/* ------------------------
-   GOOGLE STRATEGY
------------------------- */
+// Google Strategy
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: '/auth/google/callback',
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Extract email from profile
-        const email = profile.emails[0].value;
+        const email = profile.emails?.[0]?.value;
 
-        // Check if user already exists
         let user = await User.findOne({ email });
         if (!user) {
-          // Create a new user for first-time Google login
           user = await User.create({
             name: profile.displayName,
             email,
-            password: '', // OAuth users don't have local passwords
+            password: '', // OAuth users don't need local passwords
+            googleId: profile.id,
           });
         }
 
