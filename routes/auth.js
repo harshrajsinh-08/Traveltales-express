@@ -1,30 +1,47 @@
 import express from 'express';
 import passport from 'passport';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 
 const router = express.Router();
 
-// --- Local Signup ---
+/* ------------------------
+   LOCAL SIGNUP
+------------------------ */
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Validate input
+    if (!name || !email || !password) {
+      return res.render('signup', { error: 'All fields are required', success: null });
+    }
+
+    // Check DB connection
+    if (mongoose.connection.readyState !== 1) {
+      return res.render('signup', { error: 'Database connection error.', success: null });
+    }
+
+    // Check for existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.render('signup', { error: 'User already exists', success: null });
     }
 
+    // Create user
     const newUser = new User({ name, email, password });
     await newUser.save();
 
     return res.render('signup', { success: 'Account created! Please login.', error: null });
   } catch (err) {
-    console.error('Signup Error:', err);
+    console.error('Signup Error:', err.message);
     return res.render('signup', { error: 'Server error, please try again.', success: null });
   }
 });
 
-// --- Local Login ---
+/* ------------------------
+   LOCAL LOGIN
+------------------------ */
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -34,33 +51,41 @@ router.post('/login', async (req, res) => {
       return res.render('login', { error: 'Invalid email or password', success: null });
     }
 
-    // Store user in cookie-session
-    req.login(user, (err) => {
-      if (err) return res.render('login', { error: 'Login failed', success: null });
-      return res.redirect('/');
-    });
+    // Save user session info
+    req.session.user = { id: user._id, name: user.name };
+    req.user = user; // Optional, in case passport expects it
+
+    return res.redirect('/');
   } catch (err) {
-    console.error('Login Error:', err);
+    console.error('Login Error:', err.message);
     return res.render('login', { error: 'Server error during login', success: null });
   }
 });
 
-// --- Google OAuth ---
+/* ------------------------
+   GOOGLE OAUTH
+------------------------ */
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
+  passport.authenticate('google', { failureRedirect: '/login', session: false }),
   (req, res) => {
+    // Save OAuth user info in session
+    req.session.user = { id: req.user._id, name: req.user.name };
+    req.user = req.user;
+
     res.redirect('/');
   }
 );
 
-// --- Logout ---
+/* ------------------------
+   LOGOUT
+------------------------ */
 router.get('/logout', (req, res) => {
-  req.logout(() => {
-    res.redirect('/login');
-  });
+  req.session = null; // Clear cookie-session data
+  req.user = null;
+  res.redirect('/login');
 });
 
 export default router;
