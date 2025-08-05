@@ -1,40 +1,65 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
+import express from 'express';
+import session from 'express-session';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import passport from 'passport';
 
+import authRoutes from './routes/auth.js';
+import pageRoutes from './routes/pages.js';
+import './utils/passportConfig.js'; // ✅ OAuth config
+
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// --- Setup __dirname in ESM ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// --- MongoDB connection ---
+mongoose
+  .connect(process.env.MONGO_URI, { dbName: 'traveltales' })
+  .then(() => console.log('✅ MongoDB Connected'))
+  .catch((err) => console.error('❌ MongoDB Error:', err));
+
+// --- Static & Body Parsers ---
 app.use(express.static('public'));
-app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// --- MongoDB Connection ---
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✅ MongoDB Connected!'))
-.catch(err => console.error('❌ MongoDB Connection Error:', err));
+// --- Express Session (Only) ---
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'supersecretkey',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,        // ⚠️ Must be false for localhost without HTTPS
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60, // 1 hour
+    },
+  })
+);
 
-// Routes
-app.get('/', (req, res) => res.render('index'));
-app.get('/login', (req, res) => res.render('login'));
-app.get('/signup', (req, res) => res.render('signup'));
+// --- Passport Init for OAuth ---
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.post('/signup', (req, res) => {
-  // TODO: Save user to MongoDB
-  res.redirect('/login');
+// --- View Engine ---
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+// --- Make session user available in all EJS templates ---
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || req.user || null; // OAuth or local user
+  next();
 });
 
-app.post('/login', (req, res) => {
-  // TODO: Validate user
-  res.redirect('/home');
-});
+// --- Routes ---
+app.use('/', pageRoutes);
+app.use('/auth', authRoutes);
 
-app.get('/home', (req, res) => res.render('index'));
-app.get('/explore', (req, res) => res.render('explore'));
-app.get('/profile', (req, res) => res.render('profile'));
-
+// --- Start Server ---
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

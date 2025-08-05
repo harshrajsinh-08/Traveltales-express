@@ -1,20 +1,29 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-// Pages
-router.get('/', (req, res) => res.render('index'));
-router.get('/blogs', (req, res) => res.render('blogs'));
-router.get('/contact', (req, res) => res.render('contact'));
-router.get('/explore', (req, res) => res.render('explore'));
-router.get('/login', (req, res) => res.render('login'));
-router.get('/profile', (req, res) => res.render('profile'));
-router.get('/privacy', (req, res) => res.render('privacy'));
+// Middleware to check if user is logged in
+function requireLogin(req, res, next) {
+  if (!req.session.user) {
+    return res.redirect('/login'); // If not logged in, go to login
+  }
+  next();
+}
 
-// Example: Handling login POST request
-router.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  // Add your login validation logic here
-  res.send(`Welcome ${username}!`);
+// --- Public Pages ---
+router.get('/login', (req, res) => res.render('login', { error: null, success: null }));
+router.get('/signup', (req, res) => res.render('signup', { error: null, success: null }));
+router.get('/privacy', (req, res) => res.render('privacy'));
+router.get('/contact', (req, res) => res.render('contact'));
+
+// --- Protected Pages ---
+router.get('/', requireLogin, (req, res) => {
+  res.render('index', { user: req.session.user });
 });
 
-module.exports = router;
+router.get('/home', (req, res) => res.redirect('/')); // alias to home
+
+router.get('/blogs', requireLogin, (req, res) => res.render('blogs', { user: req.session.user }));
+router.get('/explore', requireLogin, (req, res) => res.render('explore', { user: req.session.user }));
+router.get('/profile', requireLogin, (req, res) => res.render('profile', { user: req.session.user }));
+
+export default router;
