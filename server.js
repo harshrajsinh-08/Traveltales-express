@@ -1,49 +1,40 @@
+require('dotenv').config();
 const express = require('express');
-const app = express();
-const PORT = 3000;
+const mongoose = require('mongoose');
 
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: true })); // Parse form data
+app.use(express.urlencoded({ extended: true }));
 
-// Default route → Login page
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// --- MongoDB Connection ---
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ MongoDB Connected!'))
+.catch(err => console.error('❌ MongoDB Connection Error:', err));
 
-// Show login page (GET /login)
-app.get('/login', (req, res) => {
-  res.render('login');
-});
+// Routes
+app.get('/', (req, res) => res.render('index'));
+app.get('/login', (req, res) => res.render('login'));
+app.get('/signup', (req, res) => res.render('signup'));
 
-// Show Signup page
-app.get('/signup', (req, res) => {
-  res.render('signup');
-});
-
-// Handle signup POST (fake)
 app.post('/signup', (req, res) => {
+  // TODO: Save user to MongoDB
   res.redirect('/login');
 });
 
-// Handle login POST (fake)
 app.post('/login', (req, res) => {
+  // TODO: Validate user
   res.redirect('/home');
 });
 
-// Home page
-app.get('/home', (req, res) => {
-  res.render('index');
-});
-app.get('/explore', (req, res) => {
-  res.render('explore'); // renders views/explore.ejs
-});
+app.get('/home', (req, res) => res.render('index'));
+app.get('/explore', (req, res) => res.render('explore'));
+app.get('/profile', (req, res) => res.render('profile'));
 
-// Profile page
-app.get('/profile', (req, res) => {
-  res.render('profile'); // renders views/profile.ejs
-});
-
-
-
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
