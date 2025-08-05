@@ -12,7 +12,6 @@ import './utils/passportConfig.js'; // ✅ Google OAuth config
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // --- Setup __dirname in ESM ---
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +28,7 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// --- Cookie Session (No express-session) ---
+// --- Cookie Session (works on Vercel) ---
 app.use(
   cookieSession({
     name: 'traveltales-session',
@@ -56,5 +55,13 @@ app.use((req, res, next) => {
 app.use('/', pageRoutes);
 app.use('/auth', authRoutes);
 
-// --- Start Server ---
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+// --- Localhost server only ---
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () =>
+    console.log(`🚀 Server running on http://localhost:${PORT}`)
+  );
+}
+
+// --- Export for Vercel ---
+export default app;
