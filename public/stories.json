@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "A Journey Through Rajasthan",
+    "summary": "Explore the vibrant forts, deserts, and palaces of Rajasthan on this unforgettable journey.",
+    "image": "https://images.unsplash.com/photo-1549887534-4b3b1a4de74e"
+  },
+  {
+    "id": 2,
+    "title": "Himalayan Adventure",
+    "summary": "Witness the breathtaking mountains and serene landscapes of the Himalayas.",
+    "image": "https://images.unsplash.com/photo-1508264165352-258a6f0e0132"
+  },
+  {
+    "id": 3,
+    "title": "Goa Beach Escapade",
+    "summary": "Relax on the sandy beaches of Goa and enjoy the coastal vibes of India.",
+    "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+  }
+]

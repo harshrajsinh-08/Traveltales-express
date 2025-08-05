@@ -1,0 +1,22 @@
+{
+  "Jaipur": {
+    "city_image": "https://images.unsplash.com/photo-1602643163983-ed0babc39797?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFpcHVyfGVufDB8fDB8fHww",
+    "how_to_reach": "By air via Jaipur International Airport, by train, or by road.",
+    "nearest_station": "Jaipur Junction",
+    "nearest_airport": "Jaipur International Airport",
+    "attractions": [
+      { "name": "Hawa Mahal", "price_range": "₹50-200" },
+      { "name": "Amber Fort", "price_range": "₹100-500" }
+    ]
+  },
+  "Goa": {
+    "city_image": "https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Z29hfGVufDB8fDB8fHww",
+    "how_to_reach": "Flights to Dabolim Airport or trains to Madgaon.",
+    "nearest_station": "Madgaon",
+    "nearest_airport": "Dabolim Airport",
+    "attractions": [
+      { "name": "Baga Beach", "price_range": "Free" },
+      { "name": "Fort Aguada", "price_range": "₹50" }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Featured Travel Stories - TravelTales</title>
+
+  <!-- TailwindCSS & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .story-card:hover { transform: translateY(-5px); transition: 0.3s ease; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navbar -->
+  <%- include('partials/navbar') %>
+
+  <!-- Page Header -->
+  <header class="bg-orange-500 text-white py-6 text-center shadow-lg ">
+    <h1 class="text-4xl font-bold">🌟 Featured Travel Stories</h1>
+    <p class="text-lg mt-2">Explore India's most iconic travel tales</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-12">
+    <div id="stories-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Story cards will be dynamically loaded via JS -->
+    </div>
+  </main>
+
+  <%- include('partials/footer') %> 
+  <!-- Scripts -->
+  <script src="/navbar.js"></script>
+  <script src="/featured-stories.js"></script>
+</body>
+</html>

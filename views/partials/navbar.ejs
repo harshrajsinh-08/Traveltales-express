@@ -1,0 +1,41 @@
+<nav id="navbar" class="sticky top-0 z-[9999] bg-white shadow-md">
+  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+
+    <!-- Logo -->
+    <a href="/home" class="text-2xl font-bold text-orange-500 hover:text-orange-600 transition">
+      TravelTales
+    </a>
+
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex space-x-6 font-medium text-gray-800">
+      <a href="/explore" class="hover:text-orange-500 transition">Explore</a>
+      <a href="/blogs" class="hover:text-orange-500 transition">Blog</a>
+      <a href="/trip-planner" class="hover:text-orange-500 transition">My Trips</a>
+      <a href="/profile" class="hover:text-orange-500 transition">Profile</a>
+      <a href="/about" class="hover:text-orange-500 transition">About</a>
+      <a href="/contact" class="hover:text-orange-500 transition">Contact</a>
+    </div>
+
+    <!-- Hamburger Menu (Mobile) -->
+    <button id="mobile-menu-toggle" class="md:hidden text-gray-800 z-[10000] relative">
+      <i class="bi bi-list text-3xl"></i>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu"
+       class="md:hidden absolute top-full left-0 w-full bg-white shadow-md
+              opacity-0 -translate-y-5 pointer-events-none transition-all duration-300 z-[9999]">
+    <div class="flex flex-col gap-4 px-4 py-6">
+      <a href="/explore" class="text-gray-700 hover:text-orange-500">Explore</a>
+      <a href="/blogs" class="text-gray-700 hover:text-orange-500">Blog</a>
+      <a href="/trip-planner" class="text-gray-700 hover:text-orange-500">My Trips</a>
+      <a href="/profile" class="text-gray-700 hover:text-orange-500">Profile</a>
+      <a href="/about" class="text-gray-700 hover:text-orange-500">About</a>
+      <a href="/contact" class="text-gray-700 hover:text-orange-500">Contact</a>
+      <a href="/login" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-center transition">
+        Login
+      </a>
+    </div>
+  </div>
+</nav>

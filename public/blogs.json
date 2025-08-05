@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Top 10 Hill Stations in India",
+    "summary": "Escape the heat and explore the most beautiful hill stations for a perfect getaway.",
+    "image": "https://images.unsplash.com/photo-1600036136210-7b99a9f7f4ba"
+  },
+  {
+    "id": 2,
+    "title": "Backpacking Across Kerala",
+    "summary": "Discover Kerala’s serene backwaters, tea plantations, and vibrant culture on a budget trip.",
+    "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+  },
+  {
+    "id": 3,
+    "title": "A Foodie's Guide to Delhi",
+    "summary": "From street food to luxury dining, explore the culinary gems of India’s capital city.",
+    "image": "https://images.unsplash.com/photo-1589307003534-9a4b0da0fbb4"
+  }
+]
