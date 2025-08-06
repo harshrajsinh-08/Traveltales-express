@@ -12,17 +12,17 @@ function requireLogin(req, res, next) {
   next();
 }
 
-// Helper function to load stories.json
-function loadStories() {
+// Helper to load JSON files safely
+function loadJSON(fileName) {
   try {
-    const storiesPath = path.join(process.cwd(), 'public', 'stories.json'); 
-    if (fs.existsSync(storiesPath)) {
-      const data = fs.readFileSync(storiesPath, 'utf-8');
+    const filePath = path.join(process.cwd(), 'public', fileName);
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, 'utf-8');
       return JSON.parse(data);
     }
     return [];
   } catch (err) {
-    console.error('Error loading stories:', err);
+    console.error(`Error loading ${fileName}:`, err);
     return [];
   }
 }
@@ -39,14 +39,24 @@ router.get('/contact', (req, res) => res.render('contact'));
    PROTECTED ROUTES
 ------------------------ */
 router.get('/', requireLogin, (req, res) => {
-  const stories = loadStories(); // ✅ Load stories for home page
-  res.render('index', { user: req.session.user, stories });
+  const stories = loadJSON('stories.json'); // ✅ Load featured travel stories
+  const blogs = loadJSON('blogs.json');     // ✅ Load travel blogs
+
+  res.render('index', { 
+    user: req.session.user, 
+    stories,
+    blogs
+  });
 });
 
 router.get('/home', (req, res) => res.redirect('/')); // alias to home
 
 router.get('/blogs', requireLogin, (req, res) => {
-  res.render('blogs', { user: req.session.user });
+  const blogs = loadJSON('blogs.json'); // ✅ Load blogs for blogs page
+  res.render('blogs', { 
+    user: req.session.user, 
+    blogs 
+  });
 });
 
 router.get('/explore', requireLogin, (req, res) => {
