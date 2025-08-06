@@ -1,4 +1,7 @@
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
+
 const router = express.Router();
 
 // Middleware to check if user is logged in
@@ -9,15 +12,35 @@ function requireLogin(req, res, next) {
   next();
 }
 
-// Public routes (no login required)
+// Helper function to load stories.json
+function loadStories() {
+  try {
+    const storiesPath = path.join(process.cwd(), 'public', 'stories.json'); 
+    if (fs.existsSync(storiesPath)) {
+      const data = fs.readFileSync(storiesPath, 'utf-8');
+      return JSON.parse(data);
+    }
+    return [];
+  } catch (err) {
+    console.error('Error loading stories:', err);
+    return [];
+  }
+}
+
+/* ------------------------
+   PUBLIC ROUTES
+------------------------ */
 router.get('/login', (req, res) => res.render('login', { error: null, success: null }));
 router.get('/signup', (req, res) => res.render('signup', { error: null, success: null }));
 router.get('/privacy', (req, res) => res.render('privacy'));
 router.get('/contact', (req, res) => res.render('contact'));
 
-// Protected routes (login required)
+/* ------------------------
+   PROTECTED ROUTES
+------------------------ */
 router.get('/', requireLogin, (req, res) => {
-  res.render('index', { user: req.session.user });
+  const stories = loadStories(); // ✅ Load stories for home page
+  res.render('index', { user: req.session.user, stories });
 });
 
 router.get('/home', (req, res) => res.redirect('/')); // alias to home

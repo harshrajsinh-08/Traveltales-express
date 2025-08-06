@@ -17,12 +17,10 @@
     .story-card:hover, .blog-card:hover { transform: translateY(-5px); transition: transform 0.3s ease; }
     .badge { background-color: #f97316; color: white; font-size: 12px; font-weight: bold; padding: 0.2rem 0.6rem; border-radius: 12px; display: inline-block; }
   </style>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body class="bg-gray-50">
   <!-- Navbar -->
-<%- include('partials/navbar') %>
+  <%- include('partials/navbar') %>
 
   <!-- Hero Section -->
   <header class="parallax-header relative flex items-center justify-center">
@@ -46,65 +44,75 @@
   <!-- Featured Travel Stories Section -->
   <section id="featured-stories" class="container mx-auto px-4 py-16">
     <h2 class="text-3xl font-bold mb-8">Featured Travel Stories</h2>
-    <div id="stories-container" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+    <div id="stories-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <p class="text-gray-500 text-center col-span-full">Loading stories...</p>
+    </div>
   </section>
 
   <script>
-  fetch('stories.json')
-    .then(res => res.json())
-    .then(stories => {
-      const container = document.getElementById('stories-container');
-      stories.forEach(story => {
-        const card = document.createElement('div');
-        card.className = "story-card bg-white rounded-xl shadow-md overflow-hidden transition";
-        card.innerHTML = `
-          <img src="${story.image}" class="h-48 w-full object-cover"/>
-          <div class="p-6">
-            <h3 class="font-bold text-xl mb-2">${story.title}</h3>
-            <p class="text-gray-600">${story.summary}</p>
-            <a href="/story/${story.id}" class="text-orange-500 font-semibold hover:underline mt-3 inline-block">Read More →</a>
-          </div>
-        `;
-        container.appendChild(card);
+    // ✅ Fetch stories from public/stories.json
+    fetch('/stories.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch stories.json');
+        return res.json();
+      })
+      .then(stories => {
+        const container = document.getElementById('stories-container');
+        container.innerHTML = '';
+
+        if (!stories || stories.length === 0) {
+          container.innerHTML = `<p class="text-gray-500 text-center col-span-full">No stories available yet.</p>`;
+          return;
+        }
+
+        stories.forEach(story => {
+          const card = document.createElement('div');
+          card.className = "story-card bg-white rounded-xl shadow-md overflow-hidden transition";
+          card.innerHTML = `
+            <img src="${story.image}" class="h-48 w-full object-cover"/>
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2">${story.title}</h3>
+              <p class="text-gray-600">${story.summary}</p>
+              <a href="/story/${story.id}" class="text-orange-500 font-semibold hover:underline mt-3 inline-block">Read More →</a>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading stories:', err);
+        document.getElementById('stories-container').innerHTML =
+          `<p class="text-gray-500 text-center col-span-full">Failed to load stories.</p>`;
       });
-    });
   </script>
 
   <!-- Blog Section -->
-<section id="blog-section" class="bg-gray-100 py-16">
-  <div class="container mx-auto px-4">
-    <h2 class="text-3xl font-bold mb-8">Travel Blogs</h2>
+  <section id="blog-section" class="bg-gray-100 py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-8">Travel Blogs</h2>
 
-    <!-- Blog Cards Container -->
-    <div id="blogs-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Dynamic blog cards will appear here -->
+      <!-- Blog Cards Container -->
+      <div id="blogs-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <p class="text-gray-500 text-center col-span-full">Loading blogs...</p>
+      </div>
+
+      <!-- View All Blogs Button -->
+      <div class="text-center mt-10">
+        <a href="/blogs" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition">
+          View All Blogs →
+        </a>
+      </div>
     </div>
+  </section>
 
-    <!-- View All Blogs Button -->
-    <div class="text-center mt-10">
-      <a href="/blogs" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition">
-        View All Blogs →
-      </a>
+  <!-- Profile Section -->
+  <section id="profile-section" class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl font-bold mb-8">My Profile</h2>
+    <div id="profile-container"
+         class="bg-white rounded-xl shadow-md p-6 flex flex-col md:flex-row gap-6 items-center">
+      <p class="text-gray-500 text-center">Loading profile...</p>
     </div>
-  </div>
-</section>
-
-<!-- Load Blogs JS -->
-<script src="/blogs-section.js"></script>
-
-<!-- Dynamic Profile Section -->
-<section id="profile-section" class="container mx-auto px-4 py-16">
-  <h2 class="text-3xl font-bold mb-8">My Profile</h2>
-
-  <!-- Profile Container -->
-  <div id="profile-container"
-       class="bg-white rounded-xl shadow-md p-6 flex flex-col md:flex-row gap-6 items-center">
-    <!-- Dynamic content will be injected here by profile-preview.js -->
-  </div>
-</section>
-
-<!-- External Script -->
-<script src="/profile-preview.js"></script>
+  </section>
 
   <!-- Plan Your Trip Section -->
   <section id="plan-trip" class="bg-gray-100 pt-12 pb-12">
@@ -123,11 +131,12 @@
   </section>
 
   <!-- Footer -->
-<%- include('partials/footer') %>
+  <%- include('partials/footer') %>
+
+  <!-- Scripts -->
+  <script src="/navbar.js"></script>
+  <script src="/blogs.js"></script>
+  <script src="/profile-section.js"></script>
+  <script src="/trip.js"></script>
 </body>
-<script src="/navbar.js"></script>
-<script src="/featured-stories.js"></script>
-<script src="/blogs.js"></script>
-<script src="/profile-section.js"></script>
-<script src="/trip.js"></script>
 </html>
