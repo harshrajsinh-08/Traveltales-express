@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.js';
 import pageRoutes from './routes/pages.js';
 import apiRoutes from './routes/api.js';
 import './utils/passportConfig.js'; // ✅ Google OAuth config
+import { connectDB } from './utils/database.js';
 
 dotenv.config();
 const app = express();
@@ -18,14 +19,14 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- MongoDB connection ---
-mongoose
-  .connect(process.env.MONGO_URI, { dbName: 'traveltales' })
-  .then(() => console.log('✅ MongoDB Connected'))
-  .catch((err) => {
-    console.error('❌ MongoDB Error:', err);
+// --- MongoDB connection (serverless-friendly) ---
+if (process.env.NODE_ENV !== 'production') {
+  // For local development, connect immediately
+  connectDB().catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
     process.exit(1);
   });
+}
 
 // --- Middleware ---
 app.use(express.static('public'));
@@ -48,6 +49,20 @@ app.use(passport.session());
 // --- View Engine ---
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+// --- Ensure database connection for each request ---
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    return res.status(500).json({ 
+      error: 'Database connection failed',
+      message: error.message 
+    });
+  }
+});
 
 // --- Make user available in all EJS templates ---
 app.use((req, res, next) => {

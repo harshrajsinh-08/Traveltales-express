@@ -2,6 +2,7 @@ import express from "express";
 import passport from "passport";
 import mongoose from "mongoose";
 import User from "../models/User.js";
+import { connectDB } from "../utils/database.js";
 
 const router = express.Router();
 
@@ -20,10 +21,13 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    // Check DB connection
-    if (mongoose.connection.readyState !== 1) {
+    // Ensure database connection
+    try {
+      await connectDB();
+    } catch (dbError) {
+      console.error('Database connection failed:', dbError);
       return res.render("signup", {
-        error: "Database connection error.",
+        error: "Database connection error. Please try again.",
         success: null,
       });
     }
@@ -69,10 +73,13 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // Check DB connection
-    if (mongoose.connection.readyState !== 1) {
+    // Ensure database connection
+    try {
+      await connectDB();
+    } catch (dbError) {
+      console.error('Database connection failed:', dbError);
       return res.render("login", {
-        error: "Database connection error.",
+        error: "Database connection error. Please try again.",
         success: null,
       });
     }

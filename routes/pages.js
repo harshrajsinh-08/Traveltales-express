@@ -42,6 +42,7 @@ router.get('/login', (req, res) => {
 router.get('/signup', (req, res) => res.render('signup', { error: null, success: null }));
 router.get('/privacy', (req, res) => res.render('privacy'));
 router.get('/contact', (req, res) => res.render('contact'));
+router.get('/debug', (req, res) => res.render('debug'));
 
 /* ------------------------
    PROTECTED ROUTES
