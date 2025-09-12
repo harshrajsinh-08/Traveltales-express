@@ -2,5 +2,63 @@
   "name": "Traveler",
   "bio": "Passionate about discovering India.",
   "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1024&auto=format&fit=crop",
-  "badges": ["Explorer", "Adventurer", "Foodie"]
+  "badges": ["Explorer", "Adventurer", "Foodie"],
+  "stats": {
+    "places": 15,
+    "posts": 8,
+    "followers": 124
+  },
+  "upcomingTrips": [
+    {
+      "title": "Kerala Backwaters",
+      "date": "Jan 15, 2025"
+    },
+    {
+      "title": "Rajasthan Desert Safari",
+      "date": "Feb 20, 2025"
+    }
+  ],
+  "recentActivity": [
+    {
+      "text": "Posted a new story about Goa",
+      "icon": "bi-camera",
+      "color": "text-blue-500"
+    },
+    {
+      "text": "Liked 5 travel blogs",
+      "icon": "bi-heart",
+      "color": "text-red-500"
+    },
+    {
+      "text": "Added Manali to wishlist",
+      "icon": "bi-bookmark",
+      "color": "text-green-500"
+    }
+  ],
+  "posts": [
+    {
+      "title": "Amazing Goa Beach Experience",
+      "description": "Spent an incredible week exploring the beaches of Goa...",
+      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400",
+      "date": "Dec 10, 2024",
+      "likes": 45,
+      "comments": 12
+    },
+    {
+      "title": "Himalayan Trek Adventure",
+      "description": "The mountains called and I answered. Here's my journey...",
+      "image": "https://images.unsplash.com/photo-1621617249658-f7541ef42a93?w=400",
+      "date": "Nov 28, 2024",
+      "likes": 67,
+      "comments": 23
+    },
+    {
+      "title": "Rajasthan Palace Tour",
+      "description": "Exploring the royal heritage of Rajasthan was magical...",
+      "image": "https://plus.unsplash.com/premium_photo-1697729422411-a2553ae5bd0d?w=400",
+      "date": "Nov 15, 2024",
+      "likes": 89,
+      "comments": 34
+    }
+  ]
 }

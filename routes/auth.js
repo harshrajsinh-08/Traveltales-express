@@ -46,14 +46,33 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validate input
+    if (!email || !password) {
+      return res.render('login', { error: 'Email and password are required', success: null });
+    }
+
+    // Check DB connection
+    if (mongoose.connection.readyState !== 1) {
+      return res.render('login', { error: 'Database connection error.', success: null });
+    }
+
     const user = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
+    if (!user) {
+      return res.render('login', { error: 'Invalid email or password', success: null });
+    }
+
+    // Check if user has a password (not OAuth user)
+    if (!user.password) {
+      return res.render('login', { error: 'Please sign in with Google', success: null });
+    }
+
+    if (!(await user.comparePassword(password))) {
       return res.render('login', { error: 'Invalid email or password', success: null });
     }
 
     // Save user session info
-    req.session.user = { id: user._id, name: user.name };
-    req.user = user; // Optional, in case passport expects it
+    req.session.user = { id: user._id, name: user.name, email: user.email };
+    req.user = user;
 
     return res.redirect('/');
   } catch (err) {
@@ -69,13 +88,21 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login', session: false }),
+  passport.authenticate('google', { failureRedirect: '/login?error=oauth_failed', session: false }),
   (req, res) => {
-    // Save OAuth user info in session
-    req.session.user = { id: req.user._id, name: req.user.name };
-    req.user = req.user;
+    try {
+      // Save OAuth user info in session
+      req.session.user = { 
+        id: req.user._id, 
+        name: req.user.name, 
+        email: req.user.email 
+      };
 
-    res.redirect('/');
+      res.redirect('/');
+    } catch (err) {
+      console.error('OAuth callback error:', err);
+      res.redirect('/login?error=oauth_callback_failed');
+    }
   }
 );
 

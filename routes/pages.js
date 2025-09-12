@@ -30,7 +30,15 @@ function loadJSON(fileName) {
 /* ------------------------
    PUBLIC ROUTES
 ------------------------ */
-router.get('/login', (req, res) => res.render('login', { error: null, success: null }));
+router.get('/login', (req, res) => {
+  let error = null;
+  if (req.query.error === 'oauth_failed') {
+    error = 'Google authentication failed. Please try again.';
+  } else if (req.query.error === 'oauth_callback_failed') {
+    error = 'Authentication callback failed. Please try again.';
+  }
+  res.render('login', { error, success: null });
+});
 router.get('/signup', (req, res) => res.render('signup', { error: null, success: null }));
 router.get('/privacy', (req, res) => res.render('privacy'));
 router.get('/contact', (req, res) => res.render('contact'));
@@ -65,6 +73,29 @@ router.get('/explore', requireLogin, (req, res) => {
 
 router.get('/profile', requireLogin, (req, res) => {
   res.render('profile', { user: req.session.user });
+});
+
+// Individual blog and story routes
+router.get('/blog/:id', requireLogin, (req, res) => {
+  const blogs = loadJSON('blogs.json');
+  const blog = blogs.find(b => b.id == req.params.id);
+  
+  if (!blog) {
+    return res.status(404).render('404', { user: req.session.user });
+  }
+  
+  res.render('blog-detail', { user: req.session.user, blog });
+});
+
+router.get('/story/:id', requireLogin, (req, res) => {
+  const stories = loadJSON('stories.json');
+  const story = stories.find(s => s.id == req.params.id);
+  
+  if (!story) {
+    return res.status(404).render('404', { user: req.session.user });
+  }
+  
+  res.render('story-detail', { user: req.session.user, story });
 });
 
 export default router;

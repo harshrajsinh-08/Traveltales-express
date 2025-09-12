@@ -21,7 +21,10 @@ const __dirname = path.dirname(__filename);
 mongoose
   .connect(process.env.MONGO_URI, { dbName: 'traveltales' })
   .then(() => console.log('✅ MongoDB Connected'))
-  .catch((err) => console.error('❌ MongoDB Error:', err));
+  .catch((err) => {
+    console.error('❌ MongoDB Error:', err);
+    process.exit(1);
+  });
 
 // --- Middleware ---
 app.use(express.static('public'));
@@ -54,6 +57,11 @@ app.use((req, res, next) => {
 // --- Routes ---
 app.use('/', pageRoutes);
 app.use('/auth', authRoutes);
+
+// --- 404 Handler ---
+app.use((req, res) => {
+  res.status(404).render('404', { user: req.user || null });
+});
 
 // --- Localhost server only ---
 if (process.env.NODE_ENV !== 'production') {

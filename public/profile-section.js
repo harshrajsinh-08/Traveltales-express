@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
 
         <div class="mt-4">
-          <a href="/full-profile" 
+          <a href="/profile" 
              class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition">
             View Full Profile →
           </a>
