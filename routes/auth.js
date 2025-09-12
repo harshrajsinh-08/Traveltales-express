@@ -149,9 +149,28 @@ router.get(
    LOGOUT
 ------------------------ */
 router.get("/logout", (req, res) => {
-  req.session = null; // Clear cookie-session data
-  req.user = null;
+  // Simple logout for GET requests
+  req.session = null;
   res.redirect("/login");
+});
+
+router.post("/logout", (req, res) => {
+  try {
+    // Clear session
+    req.session = null;
+    
+    // Clear any passport session
+    if (req.logout && typeof req.logout === 'function') {
+      req.logout(() => {
+        res.redirect("/login");
+      });
+    } else {
+      res.redirect("/login");
+    }
+  } catch (err) {
+    console.error("Logout Error:", err);
+    res.redirect("/login");
+  }
 });
 
 export default router;

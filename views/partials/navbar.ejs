@@ -16,7 +16,11 @@
 
       <% if (user) { %>
         <a href="/profile" class="hover:text-orange-500 transition">Profile</a>
-        <a href="/auth/logout" class="text-red-500 hover:text-red-600 transition">Logout</a>
+        <form method="POST" action="/auth/logout" class="inline">
+          <button type="submit" class="text-red-500 hover:text-red-600 transition bg-transparent border-none cursor-pointer">
+            Logout
+          </button>
+        </form>
       <% } else { %>
         <a href="/login" class="hover:text-orange-500 transition">Login</a>
         <a href="/signup" class="hover:text-orange-500 transition">Sign Up</a>
@@ -43,9 +47,11 @@
 
       <% if (user) { %>
         <a href="/profile" class="text-gray-700 hover:text-orange-500">Profile</a>
-        <a href="/auth/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-center transition">
-          Logout
-        </a>
+        <form method="POST" action="/auth/logout" class="w-full">
+          <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-center transition">
+            Logout
+          </button>
+        </form>
       <% } else { %>
         <a href="/login" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-center transition">
           Login

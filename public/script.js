@@ -155,9 +155,28 @@ function debounce(func, wait) {
   };
 }
 
+// Logout function
+function logout() {
+  fetch('/auth/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(() => {
+    window.location.href = '/login';
+  })
+  .catch((error) => {
+    console.error('Logout error:', error);
+    // Fallback - redirect anyway
+    window.location.href = '/login';
+  });
+}
+
 // Export functions for global use
 window.TravelTales = {
   showNotification,
   selectDestination,
-  debounce
+  debounce,
+  logout
 };

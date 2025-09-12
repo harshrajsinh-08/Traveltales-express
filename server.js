@@ -51,7 +51,7 @@ app.set('view engine', 'ejs');
 
 // --- Make user available in all EJS templates ---
 app.use((req, res, next) => {
-  res.locals.user = req.user || null;
+  res.locals.user = req.session.user || req.user || null;
   next();
 });
 
