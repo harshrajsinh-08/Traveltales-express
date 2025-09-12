@@ -7,7 +7,15 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: function() { return !this.googleId; } },
   googleId: String,
   bio: String,
+  profileImage: { type: String, default: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150' },
+  location: String,
+  website: String,
+  phone: String,
+  dateOfBirth: Date,
+  gender: { type: String, enum: ['male', 'female', 'other', ''] },
   badges: [String],
+}, {
+  timestamps: true
 });
 
 // Hash password before saving

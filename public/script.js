@@ -35,7 +35,7 @@ function initializeSearch() {
 
     if (matches.length > 0) {
       searchResults.innerHTML = matches.map(dest => `
-        <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0" 
+        <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0 text-gray-800 hover:text-gray-900" 
              onclick="selectDestination('${dest}')">
           <i class="bi bi-geo-alt text-orange-500 mr-2"></i>
           ${dest}

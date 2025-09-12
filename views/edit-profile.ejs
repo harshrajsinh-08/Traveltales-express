@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Profile - Travel Tales</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: "Poppins", sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navbar -->
+  <%- include('partials/navbar') %>
+
+  <!-- Edit Profile Section -->
+  <section class="container mx-auto px-4 py-24">
+    <div class="max-w-2xl mx-auto">
+      
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold mb-2">Edit Profile</h1>
+        <p class="text-gray-600">Update your personal information</p>
+      </div>
+
+      <!-- Profile Form -->
+      <div class="bg-white rounded-xl shadow-md p-8">
+        
+        <!-- Success/Error Messages -->
+        <div id="message" class="hidden mb-6"></div>
+
+        <form id="profileForm" class="space-y-6">
+          
+          <!-- Profile Image Section -->
+          <div class="text-center">
+            <div class="relative inline-block">
+              <img id="profileImagePreview" 
+                   src="<%= user.profileImage || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150' %>" 
+                   alt="Profile" 
+                   class="w-32 h-32 rounded-full object-cover border-4 border-orange-500 mx-auto">
+              <button type="button" onclick="changeProfileImage()" 
+                      class="absolute bottom-0 right-0 bg-orange-500 text-white p-2 rounded-full hover:bg-orange-600 transition">
+                <i class="bi bi-camera text-sm"></i>
+              </button>
+            </div>
+            <input type="hidden" id="profileImage" name="profileImage" value="<%= user.profileImage || '' %>">
+            <p class="text-sm text-gray-500 mt-2">Click the camera icon to change your profile picture</p>
+          </div>
+
+          <!-- Basic Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+              <input type="text" id="name" name="name" required
+                     value="<%= user.name || '' %>"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+            
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input type="email" id="email" name="email" disabled
+                     value="<%= user.email || '' %>"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">
+              <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div>
+            <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+            <textarea id="bio" name="bio" rows="3" 
+                      placeholder="Tell us about yourself..."
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"><%= user.bio || '' %></textarea>
+          </div>
+
+          <!-- Additional Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+              <input type="text" id="location" name="location" 
+                     placeholder="City, Country"
+                     value="<%= user.location || '' %>"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+            
+            <div>
+              <label for="website" class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+              <input type="url" id="website" name="website" 
+                     placeholder="https://yourwebsite.com"
+                     value="<%= user.website || '' %>"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+              <input type="tel" id="phone" name="phone" 
+                     placeholder="+91 9876543210"
+                     value="<%= user.phone || '' %>"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+            
+            <div>
+              <label for="dateOfBirth" class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+              <input type="date" id="dateOfBirth" name="dateOfBirth" 
+                     value="<%= user.dateOfBirth ? user.dateOfBirth.toISOString().split('T')[0] : '' %>"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+            </div>
+          </div>
+
+          <div>
+            <label for="gender" class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+            <select id="gender" name="gender" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+              <option value="">Prefer not to say</option>
+              <option value="male" <%= user.gender === 'male' ? 'selected' : '' %>>Male</option>
+              <option value="female" <%= user.gender === 'female' ? 'selected' : '' %>>Female</option>
+              <option value="other" <%= user.gender === 'other' ? 'selected' : '' %>>Other</option>
+            </select>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-4 pt-6">
+            <button type="submit" 
+                    class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 px-6 rounded-lg font-medium transition">
+              <i class="bi bi-check-circle mr-2"></i>
+              Save Changes
+            </button>
+            <a href="/profile" 
+               class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-3 px-6 rounded-lg font-medium transition text-center">
+              <i class="bi bi-x-circle mr-2"></i>
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profile Image Modal -->
+  <div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full">
+      <h3 class="text-xl font-bold mb-4">Change Profile Picture</h3>
+      
+      <!-- Image URL Input -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+        <input type="url" id="imageUrlInput" placeholder="https://example.com/image.jpg"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+      </div>
+      
+      <!-- Suggested Images -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Or choose from suggestions:</label>
+        <div class="grid grid-cols-4 gap-2">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" 
+               class="w-16 h-16 rounded-full object-cover cursor-pointer border-2 border-transparent hover:border-orange-500"
+               onclick="selectSuggestedImage(this.src)">
+          <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150" 
+               class="w-16 h-16 rounded-full object-cover cursor-pointer border-2 border-transparent hover:border-orange-500"
+               onclick="selectSuggestedImage(this.src)">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" 
+               class="w-16 h-16 rounded-full object-cover cursor-pointer border-2 border-transparent hover:border-orange-500"
+               onclick="selectSuggestedImage(this.src)">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150" 
+               class="w-16 h-16 rounded-full object-cover cursor-pointer border-2 border-transparent hover:border-orange-500"
+               onclick="selectSuggestedImage(this.src)">
+        </div>
+      </div>
+      
+      <div class="flex gap-3">
+        <button onclick="updateProfileImage()" 
+                class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg">
+          Update
+        </button>
+        <button onclick="closeImageModal()" 
+                class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <%- include('partials/footer') %>
+
+  <!-- Scripts -->
+  <script src="/script.js"></script>
+  <script src="/navbar.js"></script>
+  <script>
+    // Profile form submission
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      try {
+        const response = await fetch('/auth/profile/edit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          showMessage(result.success, 'success');
+          // Redirect to profile after 2 seconds with cache busting
+          setTimeout(() => {
+            window.location.href = '/profile?updated=' + Date.now();
+          }, 2000);
+        } else {
+          showMessage(result.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Network error. Please try again.', 'error');
+      }
+    });
+
+    // Profile image functions
+    function changeProfileImage() {
+      document.getElementById('imageModal').classList.remove('hidden');
+    }
+
+    function closeImageModal() {
+      document.getElementById('imageModal').classList.add('hidden');
+      document.getElementById('imageUrlInput').value = '';
+    }
+
+    function selectSuggestedImage(src) {
+      document.getElementById('imageUrlInput').value = src;
+    }
+
+    function updateProfileImage() {
+      const imageUrl = document.getElementById('imageUrlInput').value;
+      if (imageUrl) {
+        document.getElementById('profileImagePreview').src = imageUrl;
+        document.getElementById('profileImage').value = imageUrl;
+        closeImageModal();
+      }
+    }
+
+    // Show message function
+    function showMessage(message, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = `mb-6 p-4 rounded-lg ${
+        type === 'success' 
+          ? 'bg-green-100 text-green-700 border border-green-300' 
+          : 'bg-red-100 text-red-700 border border-red-300'
+      }`;
+      messageDiv.classList.remove('hidden');
+      
+      // Scroll to message
+      messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+</body>
+</html>

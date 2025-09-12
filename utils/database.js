@@ -8,8 +8,6 @@ export const connectDB = async () => {
   }
 
   try {
-    console.log('Connecting to MongoDB...');
-    
     if (!process.env.MONGO_URI) {
       throw new Error('MONGO_URI environment variable is not defined');
     }
@@ -23,7 +21,6 @@ export const connectDB = async () => {
     });
 
     isConnected = db.connections[0].readyState === 1;
-    console.log('✅ MongoDB Connected to:', db.connection.db.databaseName);
     
     return db.connection;
   } catch (error) {
@@ -35,7 +32,6 @@ export const connectDB = async () => {
 
 // Handle connection events
 mongoose.connection.on('connected', () => {
-  console.log('MongoDB connected');
   isConnected = true;
 });
 
@@ -45,7 +41,6 @@ mongoose.connection.on('error', (err) => {
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected');
   isConnected = false;
 });
 

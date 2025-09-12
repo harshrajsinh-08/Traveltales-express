@@ -1,9 +1,11 @@
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const res = await fetch('/profile.json');
+    // Add cache busting to ensure fresh data
+    const timestamp = new Date().getTime();
+    const res = await fetch(`/profile.json?t=${timestamp}`);
     const profile = await res.json();
 
-    const container = document.getElementById('profile-container');
+    const container = document.getElementById("profile-container");
     if (!container) return;
 
     container.innerHTML = `
@@ -17,11 +19,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         <p class="text-gray-600">${profile.bio}</p>
 
         <div class="mt-4 flex flex-wrap gap-2">
-          ${profile.badges.map(badge => `
+          ${profile.badges
+            .map(
+              (badge) => `
             <span class="badge bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
               ${badge}
             </span>
-          `).join('')}
+          `
+            )
+            .join("")}
         </div>
 
         <div class="mt-4">
@@ -33,6 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `;
   } catch (err) {
-    console.error('Error loading profile:', err);
+    console.error("Error loading profile:", err);
   }
 });

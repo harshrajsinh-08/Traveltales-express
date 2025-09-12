@@ -25,7 +25,7 @@ router.post("/signup", async (req, res) => {
     try {
       await connectDB();
     } catch (dbError) {
-      console.error('Database connection failed:', dbError);
+      console.error("Database connection failed:", dbError);
       return res.render("signup", {
         error: "Database connection error. Please try again.",
         success: null,
@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
     try {
       await connectDB();
     } catch (dbError) {
-      console.error('Database connection failed:', dbError);
+      console.error("Database connection failed:", dbError);
       return res.render("login", {
         error: "Database connection error. Please try again.",
         success: null,
@@ -108,7 +108,14 @@ router.post("/login", async (req, res) => {
     }
 
     // Save user session info
-    req.session.user = { id: user._id, name: user.name, email: user.email };
+    req.session.user = { 
+      id: user._id, 
+      name: user.name, 
+      email: user.email,
+      profileImage: user.profileImage,
+      bio: user.bio,
+      location: user.location
+    };
     req.user = user;
 
     return res.redirect("/");
@@ -142,6 +149,9 @@ router.get(
         id: req.user._id,
         name: req.user.name,
         email: req.user.email,
+        profileImage: req.user.profileImage,
+        bio: req.user.bio,
+        location: req.user.location
       };
 
       res.redirect("/");
@@ -151,6 +161,114 @@ router.get(
     }
   }
 );
+
+/* ------------------------
+   PROFILE EDITING
+------------------------ */
+router.get("/profile/edit", async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.redirect("/login");
+    }
+
+    // Ensure database connection
+    await connectDB();
+    
+    const user = await User.findById(req.session.user.id);
+    if (!user) {
+      return res.redirect("/login");
+    }
+
+    res.render("edit-profile", {
+      error: null,
+      success: null,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+        profileImage: user.profileImage,
+        location: user.location,
+        website: user.website,
+        phone: user.phone,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender
+      },
+    });
+  } catch (err) {
+    console.error("Profile Edit GET Error:", err.message);
+    res.redirect("/profile");
+  }
+});
+
+router.post("/profile/edit", async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const {
+      name,
+      bio,
+      profileImage,
+      location,
+      website,
+      phone,
+      dateOfBirth,
+      gender,
+    } = req.body;
+
+    // Validate required fields
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({ error: "Name is required" });
+    }
+
+    // Ensure database connection
+    try {
+      await connectDB();
+    } catch (dbError) {
+      console.error("Database connection failed:", dbError);
+      return res
+        .status(500)
+        .json({ error: "Database connection error. Please try again." });
+    }
+
+    const user = await User.findById(req.session.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user fields
+    user.name = name.trim();
+    user.bio = bio ? bio.trim() : "";
+    user.profileImage = profileImage || user.profileImage;
+    user.location = location ? location.trim() : "";
+    user.website = website ? website.trim() : "";
+    user.phone = phone ? phone.trim() : "";
+    user.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
+    user.gender = gender || "";
+
+    await user.save();
+
+    // Update session with new user data
+    req.session.user = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      profileImage: user.profileImage,
+      bio: user.bio,
+      location: user.location,
+    };
+
+    return res.json({
+      success: "Profile updated successfully!",
+      user: req.session.user,
+    });
+  } catch (err) {
+    console.error("Profile Update Error:", err.message);
+    return res.status(500).json({ error: "Server error, please try again." });
+  }
+});
 
 /* ------------------------
    LOGOUT
@@ -165,9 +283,9 @@ router.post("/logout", (req, res) => {
   try {
     // Clear session
     req.session = null;
-    
+
     // Clear any passport session
-    if (req.logout && typeof req.logout === 'function') {
+    if (req.logout && typeof req.logout === "function") {
       req.logout(() => {
         res.redirect("/login");
       });
