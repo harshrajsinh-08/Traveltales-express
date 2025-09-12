@@ -8,6 +8,7 @@ import passport from 'passport';
 
 import authRoutes from './routes/auth.js';
 import pageRoutes from './routes/pages.js';
+import apiRoutes from './routes/api.js';
 import './utils/passportConfig.js'; // ✅ Google OAuth config
 
 dotenv.config();
@@ -57,6 +58,7 @@ app.use((req, res, next) => {
 // --- Routes ---
 app.use('/', pageRoutes);
 app.use('/auth', authRoutes);
+app.use('/api', apiRoutes);
 
 // --- 404 Handler ---
 app.use((req, res) => {

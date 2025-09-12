@@ -71,6 +71,26 @@ router.get('/explore', requireLogin, (req, res) => {
   res.render('explore', { user: req.session.user });
 });
 
+// Travel planner page
+router.get('/planner', requireLogin, (req, res) => {
+  res.render('planner', { user: req.session.user });
+});
+
+// Wishlist page
+router.get('/wishlist', requireLogin, (req, res) => {
+  res.render('wishlist', { user: req.session.user });
+});
+
+// Travel tips page
+router.get('/tips', requireLogin, (req, res) => {
+  res.render('tips', { user: req.session.user });
+});
+
+// Weather page
+router.get('/weather', requireLogin, (req, res) => {
+  res.render('weather', { user: req.session.user });
+});
+
 router.get('/profile', requireLogin, (req, res) => {
   res.render('profile', { user: req.session.user });
 });

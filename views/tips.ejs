@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Tips - TravelTales</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body { font-family: "Poppins", sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navbar -->
+  <%- include('partials/navbar') %>
+
+  <!-- Page Header -->
+  <header class="bg-orange-500 text-white py-16 text-center">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl font-bold mb-4">Travel Tips & Guides</h1>
+      <p class="text-xl">Essential tips for traveling in India</p>
+    </div>
+  </header>
+
+  <!-- Filter Tabs -->
+  <section class="container mx-auto px-4 py-8">
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <button onclick="filterTips('all')" class="filter-btn active px-6 py-2 rounded-full bg-orange-500 text-white font-medium transition">
+        All Tips
+      </button>
+      <button onclick="filterTips('planning')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-orange-500 hover:text-white transition">
+        Planning
+      </button>
+      <button onclick="filterTips('packing')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-orange-500 hover:text-white transition">
+        Packing
+      </button>
+      <button onclick="filterTips('transport')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-orange-500 hover:text-white transition">
+        Transport
+      </button>
+      <button onclick="filterTips('health')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-orange-500 hover:text-white transition">
+        Health & Safety
+      </button>
+      <button onclick="filterTips('culture')" class="filter-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-orange-500 hover:text-white transition">
+        Culture
+      </button>
+    </div>
+  </section>
+
+  <!-- Tips Grid -->
+  <section class="container mx-auto px-4 pb-16">
+    <div id="tips-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Tips will be loaded here -->
+    </div>
+  </section>
+
+  <!-- Essential Guides Section -->
+  <section class="bg-gray-100 py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Essential Travel Guides</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- First Time in India -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <div class="h-48 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+            <i class="bi bi-map text-6xl text-white"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">First Time in India</h3>
+            <p class="text-gray-600 mb-4">Complete guide for first-time visitors to India</p>
+            <button class="text-orange-500 font-semibold hover:underline">Read Guide →</button>
+          </div>
+        </div>
+
+        <!-- Budget Travel -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <div class="h-48 bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center">
+            <i class="bi bi-wallet2 text-6xl text-white"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">Budget Travel</h3>
+            <p class="text-gray-600 mb-4">How to travel India on a shoestring budget</p>
+            <button class="text-orange-500 font-semibold hover:underline">Read Guide →</button>
+          </div>
+        </div>
+
+        <!-- Food Guide -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+            <i class="bi bi-cup-hot text-6xl text-white"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">Food & Cuisine</h3>
+            <p class="text-gray-600 mb-4">Navigate India's diverse culinary landscape</p>
+            <button class="text-orange-500 font-semibold hover:underline">Read Guide →</button>
+          </div>
+        </div>
+
+        <!-- Transportation -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <div class="h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+            <i class="bi bi-train-front text-6xl text-white"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">Transportation</h3>
+            <p class="text-gray-600 mb-4">Master India's transportation system</p>
+            <button class="text-orange-500 font-semibold hover:underline">Read Guide →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Tips Section -->
+  <section class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl font-bold text-center mb-12">Quick Tips</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-white rounded-xl shadow-md p-8">
+        <h3 class="text-2xl font-bold mb-6 text-orange-500">Do's</h3>
+        <ul class="space-y-3">
+          <li class="flex items-start">
+            <i class="bi bi-check-circle-fill text-green-500 mr-3 mt-1"></i>
+            <span>Respect local customs and dress modestly at religious sites</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-check-circle-fill text-green-500 mr-3 mt-1"></i>
+            <span>Try local street food from busy stalls</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-check-circle-fill text-green-500 mr-3 mt-1"></i>
+            <span>Learn basic Hindi phrases</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-check-circle-fill text-green-500 mr-3 mt-1"></i>
+            <span>Carry cash as many places don't accept cards</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-check-circle-fill text-green-500 mr-3 mt-1"></i>
+            <span>Book train tickets in advance</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md p-8">
+        <h3 class="text-2xl font-bold mb-6 text-red-500">Don'ts</h3>
+        <ul class="space-y-3">
+          <li class="flex items-start">
+            <i class="bi bi-x-circle-fill text-red-500 mr-3 mt-1"></i>
+            <span>Don't drink tap water - stick to bottled water</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-x-circle-fill text-red-500 mr-3 mt-1"></i>
+            <span>Don't eat raw vegetables or unpeeled fruits</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-x-circle-fill text-red-500 mr-3 mt-1"></i>
+            <span>Don't show the soles of your feet</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-x-circle-fill text-red-500 mr-3 mt-1"></i>
+            <span>Don't use your left hand for eating or greeting</span>
+          </li>
+          <li class="flex items-start">
+            <i class="bi bi-x-circle-fill text-red-500 mr-3 mt-1"></i>
+            <span>Don't take photos without permission</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <%- include('partials/footer') %>
+
+  <!-- Scripts -->
+  <script src="/script.js"></script>
+  <script src="/navbar.js"></script>
+  <script src="/tips.js"></script>
+</body>
+</html>
